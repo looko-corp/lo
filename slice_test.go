@@ -388,7 +388,7 @@ func TestAssociate(t *testing.T) {
 
 func TestSliceToMap(t *testing.T) {
 	t.Parallel()
-	
+
 	type foo struct {
 		baz string
 		bar int
@@ -626,7 +626,7 @@ func TestSlice(t *testing.T) {
 	out16 := Slice(in, -10, 1)
 	out17 := Slice(in, -1, 3)
 	out18 := Slice(in, -10, 7)
-	
+
 	is.Equal([]int{}, out1)
 	is.Equal([]int{0}, out2)
 	is.Equal([]int{0, 1, 2, 3, 4}, out3)
@@ -758,4 +758,116 @@ func TestIsSortedByKey(t *testing.T) {
 		ret, _ := strconv.Atoi(s)
 		return ret
 	}))
+}
+
+func TestCompareSliceIgnoreOrder(t *testing.T) {
+	type args struct {
+		lhs []string
+		rhs []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "빈 슬라이스",
+			args: args{
+				lhs: []string{},
+				rhs: []string{},
+			},
+			want: true,
+		},
+		{
+			name: "요소가 같고 순서도 같음",
+			args: args{
+				lhs: []string{"a", "b", "c"},
+				rhs: []string{"a", "b", "c"},
+			},
+			want: true,
+		},
+		{
+			name: "빈 슬라이스와 비지 않은 슬라이스",
+			args: args{
+				lhs: []string{},
+				rhs: []string{"a"},
+			},
+			want: false,
+		},
+		{
+			name: "길이도 다름",
+			args: args{
+				lhs: []string{"a", "b", "c"},
+				rhs: []string{"a", "b"},
+			},
+			want: false,
+		},
+		{
+			name: "요소는 같고 순서만 다름",
+			args: args{
+				lhs: []string{"a", "b", "c"},
+				rhs: []string{"c", "b", "a"},
+			},
+			want: true,
+		},
+		{
+			name: "요소와 순서가 다름",
+			args: args{
+				lhs: []string{"a", "b", "c"},
+				rhs: []string{"c", "b", "d"},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CompareSliceIgnoreOrder(tt.args.lhs, tt.args.rhs); got != tt.want {
+				t.Errorf("CompareSliceIgnoreOrder() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestExistsDuplicate(t *testing.T) {
+	type args struct {
+		collection []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "빈 슬라이스",
+			args: args{
+				collection: []string{},
+			},
+			want: false,
+		},
+		{
+			name: "중복 없음",
+			args: args{
+				collection: []string{
+					"a", "b", "c",
+				},
+			},
+			want: false,
+		},
+		{
+			name: "중복 있음",
+			args: args{
+				collection: []string{
+					"a", "b", "c", "a",
+				},
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ExistsDuplicate(tt.args.collection); got != tt.want {
+				t.Errorf("ExistsDuplicate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

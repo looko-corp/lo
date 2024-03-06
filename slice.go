@@ -592,3 +592,46 @@ func IsSortedByKey[T any, K constraints.Ordered](collection []T, iteratee func(i
 
 	return true
 }
+
+// CompareSliceIgnoreOrder checks if two slices are equal, ignoring the order of elements.
+func CompareSliceIgnoreOrder[T comparable](lhs []T, rhs []T) bool {
+	if len(lhs) != len(rhs) {
+		return false
+	}
+
+	lhsMap := make(map[T]int, len(lhs))
+	rhsMap := make(map[T]int, len(rhs))
+
+	for _, item := range lhs {
+		lhsMap[item]++
+	}
+
+	for _, item := range rhs {
+		rhsMap[item]++
+	}
+
+	for k, v := range lhsMap {
+		if rhsMap[k] != v {
+			return false
+		}
+
+		delete(rhsMap, k)
+	}
+
+	return true
+}
+
+// ExistsDuplicate checks if there are any duplicate elements in the slice.
+func ExistsDuplicate[T comparable](collection []T) bool {
+	seen := make(map[T]struct{}, len(collection))
+
+	for _, item := range collection {
+		if _, ok := seen[item]; ok {
+			return true
+		}
+
+		seen[item] = struct{}{}
+	}
+
+	return false
+}
