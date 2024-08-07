@@ -871,3 +871,115 @@ func TestExistsDuplicate(t *testing.T) {
 		})
 	}
 }
+
+func TestAllElementsEqual(t *testing.T) {
+	type args struct {
+		collection []string
+		value      string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "빈 슬라이스",
+			args: args{
+				collection: []string{},
+				value:      "a",
+			},
+			want: true,
+		},
+		{
+			name: "모든 요소가 같음",
+			args: args{
+				collection: []string{"a", "a", "a"},
+				value:      "a",
+			},
+			want: true,
+		},
+		{
+			name: "모든 요소가 다름",
+			args: args{
+				collection: []string{"a", "b", "c"},
+				value:      "a",
+			},
+			want: false,
+		},
+		{
+			name: "1개 요소가 다름",
+			args: args{
+				collection: []string{"a", "a", "b"},
+				value:      "a",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := AllElementsEqual(tt.args.collection, tt.args.value); got != tt.want {
+				t.Errorf("AllElementsEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAnyElementEqual(t *testing.T) {
+	type args struct {
+		collection []string
+		value      string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "빈 슬라이스",
+			args: args{
+				collection: []string{},
+				value:      "a",
+			},
+			want: false,
+		},
+		{
+			name: "모든 요소가 같음",
+			args: args{
+				collection: []string{"a", "a", "a"},
+				value:      "a",
+			},
+			want: true,
+		},
+		{
+			name: "모든 요소가 다름",
+			args: args{
+				collection: []string{"a", "b", "c"},
+				value:      "a",
+			},
+			want: true,
+		},
+		{
+			name: "1개 요소가 다름",
+			args: args{
+				collection: []string{"a", "a", "b"},
+				value:      "a",
+			},
+			want: true,
+		},
+		{
+			name: "1개도 해당되지 않음",
+			args: args{
+				collection: []string{"a", "c", "b"},
+				value:      "d",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := AnyElementEqual(tt.args.collection, tt.args.value); got != tt.want {
+				t.Errorf("AnyElementEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
