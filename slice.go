@@ -635,3 +635,75 @@ func ExistsDuplicate[T comparable](collection []T) bool {
 
 	return false
 }
+
+// AllElementsEqual checks if all elements in the slice are equal to the given value.
+func AllElementsEqual[T comparable](collection []T, value T) bool {
+	for _, item := range collection {
+		if item != value {
+			return false
+		}
+	}
+
+	return true
+}
+
+// AllElementsEqualBy checks if all elements in the slice are equal to the value returned by the iteratee.
+func AllElementsEqualBy[T any, U comparable](collection []T, iteratee func(item T) U) bool {
+	if len(collection) == 0 {
+		return true
+	}
+
+	first := iteratee(collection[0])
+
+	for _, item := range collection {
+		if iteratee(item) != first {
+			return false
+		}
+	}
+
+	return true
+}
+
+// AllElementsMatch checks if all elements in the slice match the predicate.
+func AllElementsMatch[T any](collection []T, predicate func(item T) bool) bool {
+	for _, item := range collection {
+		if !predicate(item) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// AnyElementEqual checks if any element in the slice is equal to the given value.
+func AnyElementEqual[T comparable](collection []T, value T) bool {
+	for _, item := range collection {
+		if item == value {
+			return true
+		}
+	}
+
+	return false
+}
+
+// AnyElementEqualBy checks if any element in the slice is equal to the value returned by the iteratee.
+func AnyElementEqualBy[T any, U comparable](collection []T, iteratee func(item T) U, value U) bool {
+	for _, item := range collection {
+		if iteratee(item) == value {
+			return true
+		}
+	}
+
+	return false
+}
+
+// AnyElementMatch checks if any element in the slice matches the predicate.
+func AnyElementMatch[T any](collection []T, predicate func(item T) bool) bool {
+	for _, item := range collection {
+		if predicate(item) {
+			return true
+		}
+	}
+
+	return false
+}

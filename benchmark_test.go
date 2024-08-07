@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	lop "github.com/samber/lo/parallel"
+	lop "github.com/looko-corp/lo/parallel"
 	"github.com/thoas/go-funk"
 )
 
